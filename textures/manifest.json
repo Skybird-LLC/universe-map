@@ -1,0 +1,448 @@
+{
+  "name": "universal-map planet texture set",
+  "generated": "2026-11-01",
+  "generator": "Pillow 13.0.0, LANCZOS resample; JPEG quality 86 progressive+optimized, PNG optimized",
+  "source_collection": {
+    "name": "Solar System Scope - Solar System Textures",
+    "url": "https://www.solarsystemscope.com/textures/",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "modifications": "downsampled (LANCZOS) and re-encoded; .tif sources converted to PNG/JPEG; no colour grading or geometric change. The Moon files are not from this collection; see textures/ATTRIBUTION.md."
+  },
+  "conventions": {
+    "projection": "equirectangular (plate carree), except saturn_ring_alpha_1k.png which is a radial strip",
+    "colorSpace": "THREE.SRGBColorSpace for anything read as colour; THREE.NoColorSpace for normal, specular/mask and alpha data so three.js does not apply the sRGB->linear decode",
+    "flipY": "true (three.js TextureLoader default) - correct for SphereGeometry UVs",
+    "wrapS": "RepeatWrapping on equirect maps so longitude can be offset/rotated; ClampToEdgeWrapping on the ring strip",
+    "wrapT": "ClampToEdgeWrapping everywhere (latitude must not wrap)",
+    "anisotropy": "set to renderer.capabilities.getMaxAnisotropy() on the planet albedo maps"
+  },
+  "totals": {
+    "files": 20,
+    "bytes_before": 106732521,
+    "bytes_after": 10517205,
+    "reduction_percent": 90.15
+  },
+  "textures": [
+    {
+      "source": "8k_mercury.jpg",
+      "output": "mercury_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 15035740,
+      "bytes_after": 517146,
+      "channels": "albedo, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_venus_surface.jpg",
+      "output": "venus_surface_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 12523129,
+      "bytes_after": 490642,
+      "channels": "albedo (surface), sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "4k_venus_atmosphere.jpg",
+      "output": "venus_atmosphere_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 1546146,
+      "bytes_after": 124787,
+      "channels": "albedo (cloud deck), sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_mars.jpg",
+      "output": "mars_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 8396951,
+      "bytes_after": 401511,
+      "channels": "albedo, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_jupiter.jpg",
+      "output": "jupiter_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 3080980,
+      "bytes_after": 281308,
+      "channels": "albedo, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_saturn.jpg",
+      "output": "saturn_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 1098204,
+      "bytes_after": 108727,
+      "channels": "albedo, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "2k_uranus.jpg",
+      "output": "uranus_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 77751,
+      "bytes_after": 31850,
+      "channels": "albedo, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "2k_neptune.jpg",
+      "output": "neptune_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 241580,
+      "bytes_after": 65757,
+      "channels": "albedo, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_16bit_srgb_4k.tif",
+      "output": "moon_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 61891324,
+      "bytes_after": 713728,
+      "channels": "albedo, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "NASA SVS 4720 December 2025 LROC color, downsampled from the 4k 16-bit TIFF. Equirectangular, 0 longitude at center. See ATTRIBUTION.md.",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/ldem_4_uint.tif",
+      "output": "moon_normal.png",
+      "width": 1440,
+      "height": 720,
+      "bytes_before": 2076866,
+      "bytes_after": 1588480,
+      "channels": "tangent-space normal from LOLA uint16 displacement",
+      "colorSpace": "NoColorSpace",
+      "three": {
+        "colorSpace": "NoColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "Derived from ldem_4_uint.tif (4 px/deg, half-meters + 20000 offset, radius 1737.4 km). Slopes not exaggerated. See ATTRIBUTION.md.",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_sun.jpg",
+      "output": "sun_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 3696361,
+      "bytes_after": 431447,
+      "channels": "photosphere base colour, sRGB; fed to sun.frag.glsl",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; map on SphereGeometry, longitude wraps in S",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_earth_daymap.jpg",
+      "output": "earth_day_4k.jpg",
+      "width": 4096,
+      "height": 2048,
+      "bytes_before": 4565076,
+      "bytes_after": 861196,
+      "channels": "albedo, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; uMapDay / uMapNight in earth_surface.frag.glsl",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_earth_nightmap.jpg",
+      "output": "earth_night_4k.jpg",
+      "width": 4096,
+      "height": 2048,
+      "bytes_before": 3144468,
+      "bytes_after": 495710,
+      "channels": "city-light emissive, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "equirectangular; uMapDay / uMapNight in earth_surface.frag.glsl",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_earth_clouds.jpg",
+      "output": "earth_clouds_4k.jpg",
+      "width": 4096,
+      "height": 2048,
+      "bytes_before": 11619184,
+      "bytes_after": 2451888,
+      "channels": "cloud colour (near-white), sRGB",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "uMapClouds colour term for the cloud shell",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_earth_clouds.jpg",
+      "output": "earth_clouds_alpha_4k.jpg",
+      "width": 4096,
+      "height": 2048,
+      "bytes_before": 11619184,
+      "bytes_after": 2418916,
+      "channels": "single channel L; luminance = cloud alpha/opacity. Data, NOT colour.",
+      "colorSpace": "NoColorSpace",
+      "three": {
+        "colorSpace": "NoColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "Sample .r (any channel; they are identical) as the cloud alpha. Format choice: greyscale JPEG q86 rather than single-channel PNG - the lossless 8-bit L PNG is 5625217 bytes vs 2418916 bytes for the JPEG, and cloud coverage is smooth enough that DCT blocking is not visible in the alpha ramp. Must NOT be flagged sRGB.",
+      "pil_mode": "L"
+    },
+    {
+      "source": "8k_earth_normal_map.tif",
+      "output": "earth_normal_2k.png",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 9490024,
+      "bytes_after": 459270,
+      "channels": "tangent-space normal, RGB = XYZ in [0,1]. Data, NOT colour.",
+      "colorSpace": "NoColorSpace",
+      "three": {
+        "colorSpace": "NoColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "PNG (lossless) - JPEG ringing is visible as shading noise. Must NOT be flagged sRGB.",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_earth_specular_map.tif",
+      "output": "earth_specular_2k.jpg",
+      "width": 2048,
+      "height": 1024,
+      "bytes_before": 1843592,
+      "bytes_after": 170500,
+      "channels": "single channel L; water/ocean mask -> specular intensity. Data, NOT colour.",
+      "colorSpace": "NoColorSpace",
+      "three": {
+        "colorSpace": "NoColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "white = water (specular), black = land (matte). Must NOT be flagged sRGB.",
+      "pil_mode": "L"
+    },
+    {
+      "source": "8k_saturn_ring_alpha.png",
+      "output": "saturn_ring_alpha_1k.png",
+      "width": 1024,
+      "height": 62,
+      "bytes_before": 64790,
+      "bytes_after": 7930,
+      "channels": "RGBA; RGB = ring colour (sRGB), A = ring opacity",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "ClampToEdgeWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "radial strip for the ring annulus; RGB is colour so sRGB is correct, alpha is read linearly by three.js regardless. transparent:true, side:DoubleSide, depthWrite:false",
+      "pil_mode": "RGBA"
+    },
+    {
+      "source": "8k_stars_milky_way.jpg",
+      "output": "stars_milkyway_4k.jpg",
+      "width": 4096,
+      "height": 2048,
+      "bytes_before": 1905513,
+      "bytes_after": 296118,
+      "channels": "sky radiance, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "scene.background with mapping = EquirectangularReflectionMapping; three.js flips equirect backgrounds internally, leave flipY at the default",
+      "pil_mode": "RGB"
+    },
+    {
+      "source": "8k_stars.jpg",
+      "output": "stars_4k.jpg",
+      "width": 4096,
+      "height": 2048,
+      "bytes_before": 1753492,
+      "bytes_after": 253897,
+      "channels": "sky radiance, sRGB colour",
+      "colorSpace": "SRGBColorSpace",
+      "three": {
+        "colorSpace": "SRGBColorSpace",
+        "wrapS": "RepeatWrapping",
+        "wrapT": "ClampToEdgeWrapping",
+        "flipY": true,
+        "generateMipmaps": true,
+        "minFilter": "LinearMipmapLinearFilter",
+        "magFilter": "LinearFilter"
+      },
+      "notes": "scene.background with mapping = EquirectangularReflectionMapping; three.js flips equirect backgrounds internally, leave flipY at the default",
+      "pil_mode": "RGB"
+    }
+  ]
+}

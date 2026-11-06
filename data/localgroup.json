@@ -1,0 +1,45 @@
+{
+  "layer": "localgroup",
+  "frame": "supergalactic cartesian, Sun at the origin",
+  "units": "kpc",
+  "note": "Named galaxies placed from published Galactic coordinates and distances. The packed galaxy catalog has no names and quantizes positions to 0.02 Mpc/h, so it is not used as these members. Circles lie in the Milky Way disk plane so a view from above the disk shows the published radius; that plane is not each galaxy's inclination.",
+  "sources": [
+    "McConnachie, A. W. 2012, AJ, 144, 4 (arXiv:1204.1562), Tables 1–3. Distances and Galactic (l, b) are that compilation. Half-light radii are its r_h in parsecs. A trailing colon in the paper marks an uncertain structural value; those radii are flagged half-light-approx.",
+    "Andromeda isophotal diameter: de Vaucouleurs et al. 1991, RC3, log D25 + 1 = 3.28, so D25 = 190.5 arcmin at the 25 B mag/arcsec^2 isophote (NED diameter table, 1991RC3.9.C...0000d). Radius here is half of that diameter at the McConnachie distance. Inclination is not applied. Pietsch 2006 (IAU Symp. 230) quotes 78 degrees for M31; this circle does not use it.",
+    "Triangulum isophotal diameter: Tully 1988 Nearby Galaxies Catalog, D25 = 56.5 arcmin, as listed for M33 in the Messier subset at messier.seds.org/xtra/supp/tully_m.txt. Radius is half that diameter at the McConnachie distance.",
+    "r25 arcmin values for NGC 6822, NGC 147, NGC 185 and IC 10 are the comments in McConnachie 2012 Table 3, attributed there to de Vaucouleurs et al. 1991. The radius is that angular radius at the galaxy's distance.",
+    "Galactic-to-supergalactic matrix: de Vaucouleurs pole (l, b) = (47.37, +6.32) and origin (137.37, 0), the same convention as data/catalogs/PROVENANCE.md. It maps the Sun-centred galactic centre (8.178, 0, -0.020) kpc onto milkyway.json galactic_centre_sg_kpc to better than 0.001 kpc."
+  ],
+  "display_plane_normal_sg": [0.0, 0.99392259, 0.110081262],
+  "display_mark_kpc": 1.2,
+  "display_mark_note": "LMC and SMC have no half-light radius in McConnachie 2012 Table 3. The cross is a 1.2 kpc position flag so the label has a mark. It is not a measured size.",
+  "galactic_to_sg": [
+    [-0.7357425748, 0.6772612964, 0.0],
+    [-0.0745537784, -0.0809914713, 0.9939225904],
+    [0.6731453021, 0.7312711658, 0.1100812622]
+  ],
+  "members": [
+    {"name": "Large Magellanic Cloud", "short": "LMC", "l_deg": 280.5, "b_deg": -32.9, "distance_kpc": 51, "distance_err_kpc": 2, "radius_kpc": null, "radius_kind": "position", "label": true},
+    {"name": "Small Magellanic Cloud", "short": "SMC", "l_deg": 302.8, "b_deg": -44.3, "distance_kpc": 64, "distance_err_kpc": 4, "radius_kpc": null, "radius_kind": "position", "label": true},
+    {"name": "Sculptor", "short": "Sculptor", "l_deg": 287.5, "b_deg": -83.2, "distance_kpc": 86, "distance_err_kpc": 6, "radius_kpc": 0.283, "radius_kind": "half-light", "label": true},
+    {"name": "Draco", "short": "Draco", "l_deg": 86.4, "b_deg": 34.7, "distance_kpc": 76, "distance_err_kpc": 6, "radius_kpc": 0.221, "radius_kind": "half-light", "label": false},
+    {"name": "Carina", "short": "Carina", "l_deg": 260.1, "b_deg": -22.2, "distance_kpc": 105, "distance_err_kpc": 6, "radius_kpc": 0.250, "radius_kind": "half-light", "label": false},
+    {"name": "Fornax", "short": "Fornax", "l_deg": 237.1, "b_deg": -65.7, "distance_kpc": 147, "distance_err_kpc": 12, "radius_kpc": 0.710, "radius_kind": "half-light", "label": true},
+    {"name": "Leo II", "short": "Leo II", "l_deg": 220.2, "b_deg": 67.2, "distance_kpc": 233, "distance_err_kpc": 14, "radius_kpc": 0.176, "radius_kind": "half-light", "label": false},
+    {"name": "Leo I", "short": "Leo I", "l_deg": 226.0, "b_deg": 49.1, "distance_kpc": 254, "distance_err_kpc": 15, "radius_kpc": 0.251, "radius_kind": "half-light", "label": false},
+    {"name": "Phoenix", "short": "Phoenix", "l_deg": 272.2, "b_deg": -68.9, "distance_kpc": 415, "distance_err_kpc": 19, "radius_kpc": 0.454, "radius_kind": "half-light-approx", "label": false},
+    {"name": "Leo T", "short": "Leo T", "l_deg": 214.9, "b_deg": 43.7, "distance_kpc": 417, "distance_err_kpc": 19, "radius_kpc": 0.120, "radius_kind": "half-light", "label": false},
+    {"name": "NGC 6822", "short": "NGC 6822", "l_deg": 25.4, "b_deg": -18.4, "distance_kpc": 459, "distance_err_kpc": 17, "radius_kpc": 1.028, "radius_kind": "r25", "label": true},
+    {"name": "NGC 185", "short": "NGC 185", "l_deg": 120.8, "b_deg": -14.5, "distance_kpc": 617, "distance_err_kpc": 26, "radius_kpc": 1.041, "radius_kind": "r25", "label": true},
+    {"name": "NGC 147", "short": "NGC 147", "l_deg": 119.8, "b_deg": -14.3, "distance_kpc": 676, "distance_err_kpc": 28, "radius_kpc": 1.298, "radius_kind": "r25", "label": true},
+    {"name": "Cetus", "short": "Cetus", "l_deg": 101.5, "b_deg": -72.9, "distance_kpc": 755, "distance_err_kpc": 24, "radius_kpc": 0.703, "radius_kind": "half-light", "label": false},
+    {"name": "IC 1613", "short": "IC 1613", "l_deg": 129.7, "b_deg": -60.6, "distance_kpc": 755, "distance_err_kpc": 42, "radius_kpc": 1.496, "radius_kind": "half-light-approx", "label": true},
+    {"name": "Andromeda", "short": "M31", "l_deg": 121.2, "b_deg": -21.6, "distance_kpc": 783, "distance_err_kpc": 25, "radius_kpc": 21.705, "radius_kind": "isophotal", "label": true},
+    {"name": "IC 10", "short": "IC 10", "l_deg": 119.0, "b_deg": -3.3, "distance_kpc": 794, "distance_err_kpc": 44, "radius_kpc": 0.739, "radius_kind": "r25", "label": true},
+    {"name": "M32", "short": "M32", "l_deg": 121.2, "b_deg": -22.0, "distance_kpc": 805, "distance_err_kpc": 78, "radius_kpc": 0.110, "radius_kind": "half-light", "label": true},
+    {"name": "Triangulum", "short": "M33", "l_deg": 133.6, "b_deg": -31.3, "distance_kpc": 809, "distance_err_kpc": 22, "radius_kpc": 6.648, "radius_kind": "isophotal", "label": true},
+    {"name": "M110", "short": "M110", "l_deg": 120.7, "b_deg": -21.1, "distance_kpc": 824, "distance_err_kpc": 27, "radius_kpc": 0.590, "radius_kind": "half-light", "label": true},
+    {"name": "Pegasus dIrr", "short": "Pegasus", "l_deg": 94.8, "b_deg": -43.6, "distance_kpc": 920, "distance_err_kpc": 30, "radius_kpc": 0.562, "radius_kind": "half-light-approx", "label": false},
+    {"name": "WLM", "short": "WLM", "l_deg": 75.9, "b_deg": -73.6, "distance_kpc": 933, "distance_err_kpc": 34, "radius_kpc": 2.111, "radius_kind": "half-light-approx", "label": true}
+  ]
+}
