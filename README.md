@@ -1,287 +1,332 @@
-# Universal Map — star, galaxy, dipole and solar-system layers
+# Universe Map
 
-Add-on layers for **Laniakea Remapped** (`laniakea.skybirdscience.com`), the
-single-file three.js page that visualizes the Cosmicflows-4 flow field.
+Layers for the Laniakea Remapped viewer: nearby stars, a packed galaxy catalog, the number-count dipole, a schematic Milky Way, the Local Group, and the solar system. The host page keeps the Cosmicflows-4 flow field and the basin meshes. This repository holds the added layers, the catalog extracts they read, and the notes on what has been checked.
 
-The original page is never modified. `tools/patch.py` builds a v2 copy from it;
-`tools/inline.py` folds everything back into one file.
+A step on the scale ladder sets both the scale and which layers are visible. The solar system and the galaxy field are never on screen together. There is no scale at which both are legible: the planetary system is about 3×10⁻¹⁰ Mpc/h across.
 
----
+The modules under `src/` are the behavior described below. This note does not change them.
 
-## What this adds
+**Open on 6 November 2026.** Earth-surface flicker is unresolved. The Milky Way arms are the schematic in `data/milkyway.json`. Xu et al. 2023, ApJ 947, 54, is the morphology citation; it is not the geometry in the file. Chrome Research frames that day showed the LMC and SMC labels crowding the Milky Way label. One Galaxies frame without a filled pink block is not a sign-off. Safari, `tools/verify.py`, and a network-disabled load were not part of the latest pass. A module smoke test was re-run and passed. It does not draw a frame.
 
-| Layer | Contents | File |
-|---|---|---|
-| **Stars** | 24,704 HYG v4.2 stars within 100 pc at true 3-D positions, plus 8,920 naked-eye directions on a shell | `data/stars.bin` (370 kB) |
-| **Galaxies** | 287,758 galaxies with provenance flags, CF4 peculiar velocities and basin tags at both smoothing levels | `data/galaxies.bin` (3.2 MB) |
-| **Dipole** | 7 cited number-count dipole measurements with 1σ direction cones, plus 5 mass/sink markers | `data/dipole.json` |
-| **Milky Way** | 186,819-point schematic of our own galaxy with the Sun in it, at 8.178 kpc | `data/milkyway.bin` (1.7 MB) |
-| **Local Group** | 22 named members at published distances. Circles use the radius on each row. LMC and SMC are position marks | `data/localgroup.json` |
-| **Solar system** | 8 planets with true orbital planes from the JPL element table, multi-layer Earth, Moon, Sun | `data/solarsystem.json`, `textures/` |
-
-The supercluster layer is **not** rebuilt — the page already ships ten named,
-coloured basins matched to the Dupuy & Courtois (2023) attractors.
-`src/superclusters.js` is a handle over those, and every new layer inherits that
-palette rather than introducing a competing one.
+No website frame was captured for this note. The host HTML is not in this repository, and `tools/patch.py` is what turns that page into the viewer. The new drawings here are diagrams of the source and the data files. The PNG plots already in `figures/` are earlier catalog diagnostics.
 
 ---
 
-## Three findings worth stating up front
+## Scope
 
-**1. The dipole does not point at Shapley.** Every measured direction sits within
-about 20° of the CMB dipole; Shapley is **40.4°** away from the CMB direction and
-**40.0°** from the Böhme et al. 2025 fit. The flow sink carried in the page's own
-`cf-meta` is 2° from Shapley, so it is 41° off too. The layer draws that offset
-rather than asserting an alignment.
+| Piece | Where it lives |
+|---|---|
+| Stars, galaxies, Milky Way sample | `data/*.bin` with a JSON sidecar |
+| Local Group, dipole, orbits | `data/localgroup.json`, `data/dipole.json`, `data/solarsystem.json` |
+| Textures | `textures/`, rights in `textures/ATTRIBUTION.md` |
+| Flow lines, density surfaces, basin meshes | The host page. `src/superclusters.js` only looks them up |
+| Palette extract | `data/cf-meta-extract.json` |
 
-**2. The deep surveys cannot see the thing the map is about.** Measured from the
-nearest catalogued object to each landmark direction:
-
-| Landmark | 2MRS | CF4 | SDSS DR17 | DESI DR1 |
-|---|---|---|---|---|
-| Shapley | 0.11° | 0.08° | **25.61°** | **21.79°** |
-| Great Attractor | 0.05° | 0.85° | **59.00°** | **54.35°** |
-
-SDSS and DESI cover the north galactic cap only. Their points are flagged
-per-galaxy (`prov` 2 and 3), toggleable, and visually distinct by default.
-
-**3. Vela is inside the volume and the existing segmentation misses it.** The
-Vela supercluster (Hollinger et al. 2026, A&A 713, A4) sits at supergalactic
-(−118.0, +19.5, −146.4) Mpc/h, 189 Mpc/h out, with a mass approaching Shapley's.
-The CF4 watershed assigns that region to **Lepus** — there is no Vela basin,
-because CF4 barely samples the Zone of Avoidance. This galaxy layer carries
-**zero** catalogued galaxies within 20 Mpc/h of the Vela centre and only 239
-within its 74 Mpc/h characteristic radius. It is marked in `data/dipole.json`
-with that caveat attached.
-
----
-
-## Building
-
-```bash
-python tools/patch.py          # original -> "... (v2).html"            2.73 MB
-python tools/inline.py         # + data and modules inlined             7.68 MB
-python tools/inline.py --with-textures \
-       --dst "../Universal Map · Skybird Science (v2, standalone).html"  21.7 MB
-```
-
-`patch.py` applies six edits, each anchored on a string asserted to be unique, so
-it either applies cleanly or fails loudly. The resulting diff is **34 lines added,
-0 removed**, and the original `cf-data` payload stays byte-identical.
-
-The edits are:
-
-1. a `window.__UM` bridge after the post-processing setup — the page's code is an
-   ES module, so `scene` / `camera` / `controls` are otherwise private
-2. a `universal-map:ready` event at the end of the boot block
-3. four layer toggles, a four-step scale ladder, and their styles
-4. the `<script type="module" src="./universal-map/src/addon.js">` tag
-
-### file:// versus http://
-
-The v2 build **fetches** its layer files, so it must be served over `http://`.
-A `file://` load cannot fetch them and the layers will be missing (the console
-says so explicitly). Use `inline.py` for a single file that works from disk:
-modules are registered as `data:` URLs under bare `um:*` specifiers in the
-import map, so no path assumptions survive. `--with-textures` embeds the texture
-set too, which is what makes the standalone build 21.7 MB.
-
-Note that `three` itself still comes from `cdn.jsdelivr.net` via the page's
-original import map, so every build needs network access at load time.
+Bulk survey files (FITS grids, full TSVs) are not in this repository. The extracts that are here are the parquet files under `data/catalogs/` and the packed layers. No application license is stated. Texture terms and catalog terms are separate, and they are separate from each other.
 
 ---
 
 ## The scale ladder
 
-Five steps spanning about fourteen orders of magnitude:
+![Seven scale steps from a true-size Earth to the supercluster field. Each row names the scene scale, what is drawn, and the camera limits in src/addon.js.](figures/scale-ladder.png)
 
-```
-solar system  ->  nearby stars  ->  Milky Way  ->  galaxies  ->  superclusters
-```
+**Figure 1.** The seven steps in `src/addon.js` (`ORDER` and `LEVELS`). Vector drawing: [`figures/scale-ladder.svg`](figures/scale-ladder.svg). Entering a step rescales every layer and sets visibility. Toggles for layers outside the step are disabled. This is a diagram of that table. It is not a capture of the page.
 
-| Step | Scaling | Content size | near | far | OrbitControls |
-|---|---|---|---|---|---|
-| Solar system | 1 au → 2 units | Neptune at 60 | 0.05 | 5000 | 2–600 |
-| Nearby stars | 1 pc → 2 units | bubble at 200 | 0.5 | 20000 | 5–2000 |
-| Milky Way | 1 kpc → 20 units | disk at 600 | 1 | 20000 | 20–6000 |
-| Galaxies | 1 Mpc/h → 1 unit | field at ~260 | 1 | 5000 | 60–1400 |
-| Superclusters | 1 Mpc/h → 1 unit | field at ~600 | 1 | 12000 | 100–3000 |
+| Step | Scene scale | What is drawn | Camera, scene units | Bloom |
+|---|---|---|---|---|
+| Earth | 1 au = 2 | True radii. Orbit lines hidden | Opens 5.5 Earth-mesh radii toward the Sun. `near = 0.12 R`, `far = 900 R`, then power-of-two bins each frame. Distance 1.8 R–220 R after the flight | Off |
+| Solar system | 1 au = 2 | True orbits. Explore: planets ×360, Sun ×4, Moon hidden. Research: factor 1, Moon shown | near 0.05, far 5,000, distance 2–600, home 8 | 0.22 / 0.8 |
+| Nearby stars | 1 pc = 2 | 24,704 HYG positions within 100 pc. 8,920 naked-eye directions on a shell at 110 pc | near 0.5, far 20,000, distance 5–2,000, home 320 | 0.40 / 0.62 |
+| Milky Way | 1 kpc = 20 | Schematic sample, 15 kpc cylinder, 5 kpc bar. Sun at the origin | near 1, far 20,000, distance 20–8,000, home 1,600 | Off |
+| Local Group | 1 kpc = 0.5 | 22 named members, 15 kpc Milky Way circle, 200 kpc bar. Point sample hidden | near 0.2, far 40,000, distance 2–8,000. Frame is the Sun–M31 midpoint | Off |
+| Galaxies | 1 Mpc/h = 1 | 287,758 galaxies, dipole, host flow field | near 1, far 5,000, distance 60–1,400, home 512 | 0.40 / 0.62 |
+| Superclusters | 1 Mpc/h = 1 | Host basin meshes, plus galaxies and the dipole | near 1, far 12,000, distance 100–3,000, home 900 | 0.40 / 0.62 |
 
-**A level is authoritative.** Entering one sets the scale *and* the visibility of
-every layer — the new ones and the page's own flow lines, isosurfaces, rings and
-labels — and the layer toggles only choose among what that level contains.
-Toggles for layers outside the current level are disabled.
+`h = 0.75` on the galaxy and supercluster steps. Bloom pairs are `(strength, threshold)` on the host composer. Earth, the Milky Way, and the Local Group set strength to 0.
 
-That is deliberate, and it is a correction. These steps cannot share a
-coordinate system: the solar system is 3×10⁻¹⁰ Mpc/h across, so at any size that
-makes it visible next to the galaxy field it is about 10¹¹ times too large. The
-first build let a manually-ticked toggle survive a level change, and the solar
-system rendered **261 million light-years across**, swallowing the supercluster
-field. The ladder now rescales every layer on every transition and offers no way
-to put two scales on screen at once, because there is none at which both are
-legible.
+There is no mesh level of detail. Galaxy and Milky Way points are one buffer each, with `frustumCulled` off. `gl_PointSize` follows depth inside a clamp (`galaxies.js`: 0.7–9 px; `milkyway.js`: 0.7–7 px). On the Milky Way step the point-size uniform is 42 and the opacity is 0.18. On the galaxy and supercluster steps the galaxy point-size uniform is 320.
 
-Planet radii are additionally exaggerated ×1200 and the Sun ×60; at true scale
-Earth is 4×10⁻⁵ au across and would never exceed one pixel.
+### Moving between steps
 
-### Zooming in
+`setLevel` writes `camera.near`, `camera.far`, and the orbit-control distance limits, then calls the host `flyTo`. The Local Group step also sets `camera.up` from `localgroup.frame()`, so the Sun–M31 line stands upright. The other steps reset `camera.up` to `(0, 1, 0)`.
 
-* **Click the Milky Way marker** in the galaxy view, then **Enter the galaxy** on
-  its info card — this drops you into the Milky Way step.
-* In that view the Sun is a marker at the scene origin, with the 100 pc bubble
-  from the previous step drawn as a small ring around it. **Click the Sun** to
-  descend to the star bubble, and again to the solar system.
-* **Zoom in / Zoom out** buttons under the scale segment walk the ladder one
-  step at a time and name the step they lead to.
+The host page’s 100 / 200 / 300 Mpc/h rings are the wrong unit on the inner steps, by about 10⁴. `holdChrome` turns that ring group off on every frame unless the step is Galaxies or Superclusters. Host landmark glow sprites are held at zero size on every frame. Their text labels remain on the cosmological steps.
 
-### The Milky Way layer is a schematic
+Zoom in and Zoom out walk `ORDER` one step at a time. The Milky Way info card gains an “Enter the galaxy” button. A click on the Sun marker, and only on the Milky Way step, descends to the star bubble. `src/tour.js` points the host tour’s twelve stops at the step each stop is actually about. Stop 1 is Earth. The old tour had no Earth to fly to.
 
-Stated here because it is easy to mistake for a map. We observe the Milky Way
-from inside it, so its spiral pattern is not directly measured. The global
-parameters *are* real — R₀ = 8.178 kpc (GRAVITY Collaboration 2019), the Sun 20 pc
-above the plane (Bennett & Bovy 2019), a 2.6 kpc disk scale length, a 3 kpc bar
-at 25° to the Sun–centre line — but the four arms are an idealised logarithmic
-spiral at 12.5° pitch, not a fitted model. The arm *names* follow Reid et al.
-(2019); the geometry does not. `data/milkyway.json` says so in a `model` field,
-and `verify.py` asserts that field still begins with "SCHEMATIC".
-
-## Data provenance
-
-Full detail in `data/catalogs/PROVENANCE.md`. All positions are supergalactic
-cartesian in **Mpc/h with h = 0.75**, matching the page's `cf-meta` convention.
-
-* **Cosmicflows-4** — Tully et al. 2023, ApJ 944, 94. `table2` (55,877 galaxies)
-  and `groups` (38,053 groups, carrying `Vpec`). Distance `10^((DM−25)/5)`, ×h.
-* **2MRS** — Huchra et al. 2012, ApJS 199, 26, via HEASARC. 43,496 usable
-  redshifts, CMB-corrected with 369.82 km/s toward galactic (264.021, 48.253).
-* **SDSS DR17** `specObj-dr17.fits`, **DESI DR1** BGS — local copies, `z < 0.0655`,
-  `SPECPRIMARY = 1`, `CLASS = GALAXY`, `ZWARNING = 0`.
-* **HYG v4.2** — equatorial parsec xyz, rotated into the supergalactic frame.
-  Colours are blackbody sRGB from B−V via Ballesteros (2012) and the CIE 1931
-  fits of Wyman et al. (2013).
-* **Orbits** — JPL/Standish, *Keplerian Elements for Approximate Positions of the
-  Major Planets*, valid 1800–2050.
-* **Textures** — Solar System Scope, CC BY 4.0, except the Moon (NASA SVS 4720, public domain). See `textures/ATTRIBUTION.md`. Texture rights are separate from catalog rights. This repository does not state an application license.
-* **Local Group members** — distances and Galactic coordinates from McConnachie 2012, AJ 144, 4. Radii and the plane they are drawn in are recorded in `data/localgroup.json`. The Milky Way circle on that step is the 15 kpc schematic cutoff, not an isophotal diameter.
-
-### Dipole citations
-
-Each entry in `data/dipole.json` carries a `verified_from` field recording how
-the number was obtained.
-
-| Source | Ratio to Ellis–Baldwin | Significance | Read from |
-|---|---|---|---|
-| CMB (Planck 2018) | 1 (reference, 369.82 km/s) | — | standard value |
-| Böhme et al. 2025, PRL 135, 201001 | 3.67 ± 0.49 | 5.4σ | fetched full text |
-| Böhme et al. 2025, NVSS+RACS only | — | 4.5σ | fetched full text |
-| Wagenveld et al. 2023, A&A 675, A72 | ~3.5 | 4.8σ | as tabulated in Böhme |
-| Secrest et al. 2021, ApJL 908, L51 | ~2 | 4.9σ | published abstract |
-| Secrest et al. 2022, ApJL 937, L31 | ~2 | 4.4σ | published abstract |
-| Dam, Lewis & Brewer 2023, MNRAS 525, 231 | 2.46 ± 0.18 | 5.7σ | published abstract |
-
-Two corrections against the original plan: Secrest 2022 is **4.4σ**, not 5.1σ,
-and no "Land-Strykowski 2026" could be verified, so it was **dropped** rather
-than invented.
-
-`implied_velocity_kms` is the ratio times 369.82 km/s — the speed required *if
-the whole excess were kinematic*. That reading is deliberately literal. Most
-authors treat the excess as a tension with the standard model rather than as a
-measurement of our speed, and the file says so.
+Research and Explore are the host page’s body class. The solar step listens for it. Research uses physical radii. Explore uses the ×360 / ×4 boost and hides the Moon, because the Moon would sit inside the enlarged Earth. The Earth step is always true size, including the Moon at about 60 Earth radii. The smoke test measured the mean orbit at 63.06 Earth equatorial radii at T = 0.
 
 ---
 
-## Binary format
+## What the Milky Way step draws
 
-`docs/FORMAT.md` documents it in full. In short: arrays concatenated in
-`meta.arrays` order, each starting at an offset aligned up to **8 bytes**, no
-trailing padding, little-endian. Positions `int16 × 0.02` Mpc/h, normals
-`int8 / 127`, speeds `uint8 × 4` km/s, basin ids `uint8` with 255 unassigned.
+`data/milkyway.json` begins with `SCHEMATIC`. The file records R₀ = 8.178 kpc (GRAVITY Collaboration 2019, A&A 625, L10), the Sun 20 pc above the plane (Bennett & Bovy 2019, MNRAS 482, 1417), a 2.6 kpc disk scale length, a 3 kpc bar at 25° to the Sun–centre line, and a four-arm logarithmic spiral at 12.5° pitch. The arm names follow Reid et al. 2019, ApJ 885, 131. The pitch is an idealised spiral.
+
+Xu, Hao, Liu, Lin, Bian, Hou, Li & Li 2023, ApJ 947, 54, [doi:10.3847/1538-4357/acc45c](https://doi.org/10.3847/1538-4357/acc45c), is the spiral-structure paper cited for that morphology. Their R₀ is 8.15 kpc. The sample here uses 8.178 kpc. Their arm map is not in `milkyway.bin`.
+
+The mesh is a cylinder of radius 15 kpc and thickness 0.018 of that radius (about 0.27 kpc), with a soft edge, a brighter centre on the galactic centre, and a dust lane when the disk is nearly edge-on. Colour is passed through `color / (1 + color)`. A 5 kpc bar is lifted 6 kpc off the plane, with a CSS2D label “5 kpc” on this step only. A faint ring marks the 100 pc star bubble. The Sun marker is the scene origin.
+
+![Face-on and edge-on plots of the 186,819-point Milky Way sample, with the Sun and the galactic centre marked, plus an older log-size chart of five scales.](figures/milkyway_check.png)
+
+**Figure 2.** The schematic point sample, plotted from the packed positions. The inset size chart on that PNG has five rungs (solar system, stars, Milky Way, galaxies, superclusters). The current ladder is Figure 1, which adds Earth and the Local Group. The PNG is not the WebGL step: it does not show the cylinder, the 5 kpc bar, or the CSS2D label. Chrome Research frames on 6 November 2026 did not show a blown white oval or the supercluster rulers. A soft disk remained under the points. That appearance is not an accepted finish.
+
+---
+
+## What the Local Group step draws
+
+`data/localgroup.json` places 22 named members from McConnachie 2012, AJ 144, 4 (Tables 1–3). The packed redshift catalog is not used: it has no names, and a redshift is not a position inside a few megaparsecs. The galactic-to-supergalactic matrix is the de Vaucouleurs pole `(l, b) = (47.37°, +6.32°)` and origin `(137.37°, 0)`. The smoke test checks that this matrix lands the Sun-centred galactic centre on `milkyway.json` to better than 0.001 kpc.
+
+| Member | Radius on the step | Kind |
+|---|---|---|
+| Milky Way | 15 kpc circle | The schematic cutoff from the Milky Way step. Not an isophotal diameter |
+| M31 | 21.705 kpc | Half of RC3 D25 (190.5 arcmin) at 783 kpc. Inclination is not applied |
+| M33 | 6.648 kpc | Half of Tully 1988 D25 = 56.5 arcmin, at the McConnachie distance |
+| NGC 6822, NGC 147, NGC 185, IC 10 | r25 at each distance | Comments in McConnachie Table 3, from de Vaucouleurs et al. 1991 |
+| LMC, SMC | 1.2 kpc cross | No half-light radius in that table. A position mark, not a size |
+| Other labeled and unlabeled dwarfs | half-light, or half-light-approx where the paper prints a colon | Same table |
+
+Every circle is drawn in the Milky Way disk plane so one view can show the radii together. That plane is not each galaxy’s inclination. The 200 kpc bar runs along supergalactic X through the Sun–M31 midpoint and is lifted 40 kpc along the pole. Its CSS2D label is “200 kpc”.
+
+Labels are `CSS2DObject`s. Members with `label: true` get their short name. Members inside 200 kpc are shifted along a tangent by multiples of 16 scene units (32 kpc at this step’s scale). The Milky Way name sits 18 scene units along the pole. Nothing in the build resolves label collisions. Troika is not a dependency. Chrome Research frames on 6 November 2026 still showed the LMC and SMC labels crowding the Milky Way label. This note did not recapture that view.
+
+![Two panels of Local Group positions from localgroup.json: cylindrical radius against height for members inside 300 kpc, and a distance bar for all 22 members.](figures/localgroup-positions.png)
+
+**Figure 3.** Stored positions, computed from `data/localgroup.json` for this note. Vector drawing: [`figures/localgroup-positions.svg`](figures/localgroup-positions.svg). The left panel is cylindrical radius in the disk plane against height along the pole, for members inside 300 kpc. The brown tick is the 15 kpc schematic cutoff. LMC and SMC are the nearest labeled members (51 and 64 kpc). Sculptor is 86 kpc away and almost along the pole, so it falls near the axis of this projection. Teal marks are the names the viewer labels. Gray marks are drawn without a text label. This is not the oblique camera in `localgroup.frame()`, and it does not show CSS2D overlap.
+
+---
+
+## From catalogs to a frame
+
+![Five stages from catalog fetch through coordinate conversion, packed binaries, and the draw step, with a separate panel for the unresolved CF4 velocity-grid scale.](figures/data-pipeline.png)
+
+**Figure 4.** The path the packed layers follow. Vector drawing: [`figures/data-pipeline.svg`](figures/data-pipeline.svg). Full fetch notes: [`data/catalogs/PROVENANCE.md`](data/catalogs/PROVENANCE.md). Coordinate and product notes: [`docs/RESEARCH-AND-RENDERING.md`](docs/RESEARCH-AND-RENDERING.md).
+
+### Sources and the dates on them
+
+Fetched 2026-11-01, as recorded in the provenance note.
+
+| Extract | Rows in the file | Distance |
+|---|---|---|
+| `cf4_galaxies.parquet` | 55,877 | Cosmicflows-4 table2, Tully et al. 2023, ApJ 944, 94. `d[Mpc] = 10^((DM−25)/5)`, then × h |
+| `cf4_groups.parquet` | 38,053 | Same catalog, groups. Published `Dist`, × h. Carries `Vpec` |
+| `twomrs.parquet` | 43,496 | 2MRS, Huchra et al. 2012, ApJS 199, 26, via HEASARC. `d[Mpc/h] = cz_CMB / 100` |
+| `sdss_dr17_nearby.parquet` | 186,153 | SDSS DR17 `specObj`, `z < 0.0655`, `SPECPRIMARY = 1`, `CLASS = GALAXY`, `ZWARNING = 0` |
+| `desi_dr1_bgs_nearby.parquet` | 186,112 | DESI DR1 LSS BGS, `z < 0.0655` |
+
+`cdsarc.cds.unistra.fr` and `edd.ifa.hawaii.edu` were returning HTTP 502, so the CF4 tables were read from the CfA VizieR host `vizier.cfa.harvard.edu` (`viz-bin/asu-tsv`, unlimited rows). The row counts match the published totals. An earlier host check the same day found the classic `ftp/cats/J/` path returning 404. That is a different path from the table fetch above. The “no bulk mirror” remark from that FTP check is not the fetch that produced these files.
+
+HYG v4.2 (Nash / astronexus) is CC BY-SA 4.0. Star colours are blackbody sRGB from B−V (Ballesteros 2012; Wyman et al. 2013). Orbits are the JPL/Standish Keplerian elements, valid 1800–2050, seated by `ecliptic_to_supergalactic` in `data/solarsystem.json`.
+
+### What the packed galaxy file keeps
+
+`data/galaxies.json` records the cuts after the parquet extracts:
+
+- 2MRS rows within 15 arcsec and 500 km/s of a CF4 galaxy were dropped (11,615), leaving 31,881.
+- DESI rows duplicating SDSS on the same criterion were dropped (49,968).
+- The northern wedge is capped at 200,000 points with `Mr ≤ −17.48`, split 117,614 SDSS and 82,386 DESI.
+- Peculiar velocities exist on CF4 rows only, taken from the group `Vpec`. 55,864 rows carry one.
+
+Provenance codes on each point: 0 CF4, 1 2MRS, 2 SDSS, 3 DESI. Codes 2 and 3 are the wedge. They can be toggled off.
+
+Positions are supergalactic cartesian, Mpc/h, `h = 0.75`, quantized as int16 × 0.02. The binary layout is the same 8-byte alignment as the host payload. [`docs/FORMAT.md`](docs/FORMAT.md) is the byte-level note.
+
+### Measured quantities and display choices
+
+| On screen | What it is |
+|---|---|
+| CF4 positions | Distance moduli, converted as above |
+| 2MRS, SDSS, DESI positions | Redshift distance `cz/100` in Mpc/h |
+| HYG bubble | Equatorial parsecs, rotated into the supergalactic frame |
+| Naked-eye shell | Directions only, drawn at 110 pc |
+| Milky Way points, cylinder, 5 kpc bar | Schematic, parameters as in the JSON |
+| Local Group centers and the radii in the table above | The cited compilations |
+| LMC and SMC crosses | Fixed 1.2 kpc marks |
+| Circle orientations on the Local Group step | The Milky Way plane |
+| Explore planet and Sun sizes | Stated factors ×360 and ×4. Orbits stay true |
+| Earth step, and Research on the solar step | Physical radii |
+| Dipole length | `implied_velocity_kms = amplitude_ratio × 369.82`. The speed if the whole excess were kinematic. The file says most authors treat the excess as a tension, not as a speed |
+| Shafts with no published direction | Dashed, along the CMB axis, flagged `axisAssumed` |
+
+### CF4 velocity grids, still unresolved
+
+Catalog cartesians above are one object. Velocity-grid index order is another. Two notes disagree, and they may be different products:
+
+| Note | Product context | Axes | Speed |
+|---|---|---|---|
+| IP2I Cosmicflows page, as summarized 2026-11-01 | Public 64³ FITS | Stored `(SGZ, SGY, SGX)` | Multiply by 52 |
+| Build note, 2026-11-06 | The grid that build indexed | `vel[component, iSGX, iSGY, iSGZ]` | `\|v\|` about 48.6× below km/s. Direction was the quantity compared with streamline tangents |
+
+Neither factor is applied as a global scale. This repository does not contain a FITS reader that repeats either test. `data/galaxies.json` says the basin tags were recomputed from `CF4_new_128-z008_velocity.fits`, with seed agreement 0.9089 (smoothing 0) and 0.9334 (smoothing 10) on 2,118 seeds. That sentence and those ratios are the file’s. The index order used for that integration was not re-checked for this note.
+
+---
+
+## Catalog diagnostics already in the tree
+
+These PNGs were committed with the extracts. They were not regenerated here, and they are not renders of the viewer.
+
+![Aitoff maps of 2MRS, CF4, SDSS DR17, and DESI DR1, with Shapley, the Great Attractor, Perseus-Pisces, and Coma marked.](figures/coverage_allsky.png)
+
+**Figure 5.** All-sky footprints. 2MRS and CF4 reach Shapley. The SDSS and DESI panels are the parent surveys, and the titles on the image quote those larger counts. The packed layer uses the nearby cuts in the table above (117,614 and 82,386 after the magnitude cap). The gaps match the provenance note: nearest SDSS object 25.61° from Shapley and 59.00° from the Great Attractor; DESI 21.79° and 54.35°.
+
+![SGX–SGY slab of the packed galaxies, coloured by survey, with the northern wedge outlined and Shapley outside it.](figures/galaxies_sgplane.png)
+
+**Figure 6.** Supergalactic slab `|SGZ| < 20` Mpc/h through the packed catalog. The image’s own footer counts 56,354 of 287,758 galaxies in that slice. Shapley lies outside the wedge.
+
+![Aitoff map of dipole directions with 1-sigma cones, and a bar chart of implied speeds.](figures/dipole_sky.png)
+
+**Figure 7.** Directions and the literal implied speeds. `data/dipole.json` has seven entries. `src/dipole.js` draws a shaft only when `implied_velocity_kms` is set, so six shafts are built. The NVSS+RACS-only row (Böhme et al. 2025, 4.5σ, no amplitude ratio) stays in the file and has no shaft. Wagenveld et al. 2023 and both Secrest et al. papers have no direction of their own; their shafts are dashed along the CMB axis. Shapley is 40.4° from the CMB dipole and 40.0° from the Böhme et al. 2025 combined fit. The smoothing-10 flow sink is 42.1° from the CMB dipole. Mass markers, including the Great Attractor and Vela, are wireframe octahedra.
+
+The Vela note in that file places the supercluster at supergalactic `(−118.0, +19.5, −146.4)` Mpc/h (Hollinger et al. 2026, A&A 713, A4) and records that the page’s watershed assigns the region to Lepus: no catalogued galaxy within 20 Mpc/h of the centre, and 239 within the 74 Mpc/h radius. That is the file’s count.
+
+![Colour-magnitude diagram and two spatial slices of the HYG bubble inside 100 pc.](figures/stars_check.png)
+
+**Figure 8.** The 100 pc HYG bubble. The image counts 23,641 stars with a B−V colour and 1,063 given solar colour, which sum to the 24,704 packed positions. The 8,920-star direction shell is not this plot.
+
+![Inner and outer planetary orbits from the JPL elements, face-on and edge-on, with inclinations.](figures/orbits_check.png)
+
+**Figure 9.** Orbit polylines at J2000 in the ecliptic frame. Earth’s heliocentric distance on the plot is the same 0.9833 au the smoke test reports as 0.983307 au. The plot does not show the textured Earth, the atmosphere, or the flicker.
+
+![Two supergalactic slices of a recomputed basin volume beside the page palette, with a voxel-count table.](figures/basin_validation.png)
+
+**Figure 10.** An earlier slice through the recomputed basin volume. Panel titles say 90.9% and 93.3% of streamline seeds match, in line with seed agreement 0.9089 and 0.9334 stored in `data/galaxies.json`. The footer’s 93.2% and 93.0% sit next to the file’s point agreement (0.9316 and 0.9301) and are a different ratio. The check was not repeated for this note.
+
+---
+
+## Build and the checks that were actually run
+
+The host page is an input to the tools. Its filename defaults are in `tools/patch.py`. It is not committed here, so the build was not re-run and the old byte sizes of the built HTML were not remeasured.
 
 ```bash
-python tools/cfpack.py verify "../Universal Map · Skybird Science.html"
-# offset table reproduced : True
-# buffer byte-identical   : True (1,945,412 vs 1,945,412 bytes)
+python tools/patch.py
+python tools/inline.py
+python tools/inline.py --with-textures
+python tools/inline.py --vendor-three
 ```
 
----
+`patch.py` copies the host page and applies anchored edits: a `window.__UM` bridge, a `universal-map:ready` event, the layer toggles, the scale controls, and the `addon.js` script. `inline.py` folds the layer files into that copy. External `.bin` files are fetched, so a `file://` open of the patched page does not load them. The inlined file does.
 
-## What was checked
+`three` is 0.160.0 from `https://cdn.jsdelivr.net/npm/three@0.160.0` unless `--vendor-three` is passed. The shaders use that release’s GLSL 1 dialect (`varying`, `texture2D`, `gl_FragColor`). The vendor directory is not part of this tree. A page that still points at the CDN needs the network for `three`.
 
-`docs/verification.txt` records an earlier run of `python tools/verify.py`:
-67 checks, 0 failed. That program was **not** run again for this publication.
-It needs numpy and pandas, and it also expects the original HTML payloads
-beside the repo.
+```bash
+cd tools/smoketest && node smoke.js
+python tools/verify.py
+```
 
-On 6 November 2026 (America/Los_Angeles), `cd tools/smoketest && node smoke.js`
-passed. It loads the modules in Node against a stubbed three.js and the data
-files. It does not compile shaders and it does not draw a frame.
+| Check | When | Result |
+|---|---|---|
+| `cd tools/smoketest && node smoke.js` | Re-run 6 November 2026 (UTC), Node v22.23.4 | Passed. Loads every layer module against a three.js stub and the data files. Asserts the packed counts, the schematic flag, M31 at 783 kpc, a null LMC radius, Earth at 0.983307 au, Explore ×360 / ×4, and Research at factor 1. Does not compile shaders and does not draw |
+| `python tools/verify.py` | Invoked the same day | Stopped at `import pandas`. pandas is not installed here. The script also opens the host HTML beside the repository, which is absent, so the payload byte checks had nothing to open |
+| `docs/verification.txt` | Earlier record | 67 checks, 0 failed, including a byte-identical repack of the host payload. Not a result from this tree on this day |
+| Website frames | Not captured | No host page in the tree. `tools/qa.py` defaults to a macOS Chromium path. Chrome is available in this environment and was not pointed at a page |
+| Safari | Not run | |
+| Network disabled | Not run | [`docs/PROGRESS.md`](docs/PROGRESS.md) records that a bundled page can still request Google Fonts and a Zenodo URL. That was not repeated |
 
-Recorded earlier, and not repeated by that smoke run:
-
-* Supergalactic rotation against CF4 `SGL`/`SGB` over 55,877 galaxies: median
-  separation 0.305 arcsec (`data/catalogs/PROVENANCE.md`).
-* Basin-volume agreement with the page's streamline seeds, 90.9% at smoothing 0
-  and 93.3% at smoothing 10, is a build note. It is not a new measurement here.
-* CF4 velocity-grid axis order and the factor that turns grid speeds into km/s
-  are **not settled**. One build note indexes `vel[component, iSGX, iSGY, iSGZ]`
-  and treats `|v|` as about 48.6× below km/s. An earlier note on the public 64³
-  FITS says the axes are stored `(SGZ, SGY, SGX)` and the speeds are multiplied
-  by 52. Those notes may describe different products. See
-  `docs/RESEARCH-AND-RENDERING.md`. Neither factor is a global scale.
-* The smoke test's Kepler solver gives Earth's heliocentric distance at J2000
-  as 0.983307 au.
-
-## What is still open
-
-Chrome frames on 6 November 2026 (America/Los_Angeles) are evidence, not a
-sign-off. Safari was not part of this pass.
-
-* **Milky Way.** Edge-on, face-on, and oblique Research frames did not show the
-  blown white oval or the supercluster Mpc/h rulers. A soft disk remains under
-  the point sample. The arms are the schematic in `data/milkyway.json`, not the
-  arm geometry of Xu et al. 2023.
-* **Local Group.** Research showed the named members, a 200 kpc bar, and no
-  supercluster rulers. The Milky Way and Andromeda are small disks at the radii
-  in `data/localgroup.json`. The LMC and SMC labels still crowd the Milky Way label.
-* **Earth.** Surface flicker is still open.
-* **Markers.** Great Attractor and Vela markers are wireframe in `src/dipole.js`.
-  One Galaxies frame did not show a filled pink block. The label and the flow
-  lines stay. That frame is not a sign-off.
-* A network-disabled run was not done. A bundled page can still request Google
-  Fonts and a Zenodo record URL.
-
-`tools/qa.py` can serve a page and capture console errors. It was not the check
-used above.
+`tools/qa.py` can serve a built page and record the console. It was not the check used above.
 
 ---
 
-## Figures
+## Still open
 
-| File | Shows |
-|---|---|
-| `figures/coverage_allsky.png` | All-sky footprints of the four catalogs, with the measured Shapley gap |
-| `figures/galaxies_sgplane.png` | SGX–SGY slab with the wedge's true angular bounds |
-| `figures/basin_validation.png` | Recomputed basin slices against the page's streamline seeds |
-| `figures/dipole_sky.png` | Every dipole direction with 1σ cones, and the implied speeds |
-| `figures/orbits_check.png` | Orbits face-on and edge-on, with inclinations |
-| `figures/milkyway_check.png` | The galaxy model face-on and edge-on, with the Sun, and the ladder to scale |
+These stay open until a later review accepts them. Reading the source is not that acceptance.
+
+| Item | What the source does now | What is not accepted |
+|---|---|---|
+| Earth surface | Atmosphere gains are reduced, and Earth `near`/`far` are quantized to powers of two because a continuous rewrite read as flicker | The surface flicker itself. A stable moment in an earlier Chrome sequence does not close it |
+| Milky Way | Schematic cylinder, tone-mapped, bloom off, 5 kpc bar | The remaining soft disk, and any claim that the arms are a measured map |
+| Local Group labels | Short names, with a tangent offset for members inside 200 kpc | LMC, SMC, and the Milky Way name still crowded in the 6 November Chrome Research frames |
+| Marker block | Dipole markers are wireframe. Host glow sprites are forced to zero size | One Galaxies frame without a filled pink block. Not a sign-off |
+| Full catalog byte checks | `tools/verify.py` is in the tree | Not run on this tree |
+| Offline | Inlining removes the layer fetches. `three` stays on the CDN unless vendored | No network-disabled log |
+| Safari | | No pass recorded |
+
+---
+
+## Proposed milestones
+
+Proposals for what a later release would finish. They are not a schedule, and they are not version numbers.
+
+### Rendering stability
+
+Finish a review in which the Earth day side holds still while the camera moves, with clouds and the atmosphere on, in a named browser and viewport. The power-of-two near/far bins are already in `src/addon.js`. They are not that review.
+
+Finish a Milky Way review, Research, edge-on and face-on: schematic disk, point sample, 5 kpc bar, no host Mpc/h rings, and no blown white oval. One earlier Chrome set is evidence about those frames. Acceptance is a named review.
+
+Finish a Galaxies review that states what the Great Attractor and Vela markers look like. The meshes in `src/dipole.js` are wireframe. A single frame without a filled pink block does not close the item.
+
+Acceptance: the note names the browser, the viewport, Explore or Research, the step, and whether the item is accepted. `node tools/smoketest/smoke.js` still passes. That test remains necessary and is not the visual acceptance.
+
+### Scientific validation and data conventions
+
+Finish a run of `tools/verify.py` where numpy, pandas, and the host HTML are available. Cite that run. `docs/verification.txt` stays an earlier record until then.
+
+Finish one named CF4 velocity product: filename, index order, and the factor that turns grid speeds into km/s, checked again on that file. Until that note exists, ×52 and ~48.6 stay off the page.
+
+The Milky Way sample stays the schematic until a measured arm model is actually loaded. Xu et al. 2023 remains a citation either way.
+
+Acceptance: the product filename is in the note. `data/milkyway.json` still begins with `SCHEMATIC`, or the replacement file names its source. The supergalactic residual is quoted again only if it is recomputed.
+
+### Labels and layout
+
+Finish a Local Group frame, at the camera `localgroup.frame()` builds, where the LMC, SMC, and Milky Way labels can be read apart.
+
+Circles keep the radii and kinds in `data/localgroup.json`. Inclination stays unapplied unless that file changes and says so. The 5 kpc and 200 kpc bars keep those lengths.
+
+Acceptance: the review frame is identified, Research, with those three labels separable. The smoke test still asserts 22 members, M31 at 783 kpc, and a null LMC radius.
+
+### Cross-browser and offline acceptance
+
+Finish a Safari pass of the same steps, recorded separately from Chrome.
+
+Finish a network-disabled load of one named build. Write down every request that still leaves the machine, including Google Fonts, jsDelivr `three`, and a Zenodo URL if they are still there. The page is offline for that build when the log is empty, or when the note lists the remaining requests and stops calling the build offline.
+
+Acceptance: the Safari version is named, and the open-item list is scored again on that pass. The request log is kept with the build that was opened.
+
+---
+
+## Rights and studies
+
+No application license is chosen in this repository. Planet and starfield textures, except the Moon, are Solar System Scope, CC BY 4.0, downsampled as in [`textures/ATTRIBUTION.md`](textures/ATTRIBUTION.md). The Moon maps are NASA SVS 4720, public domain; credit NASA’s Scientific Visualization Studio. HYG v4.2 is CC BY-SA 4.0. Catalog papers are cited above. Do not add a PDF of Xu et al. 2023 to the repository.
+
+These were read as studies. None is a dependency, and none was copied into `src/`:
+
+| Work | License checked 2026-11-06 | Role |
+|---|---|---|
+| [local_volume_database](https://github.com/apace7/local_volume_database) | CC0-1.0 | A broader Local Volume table. Cite Pace 2025. Not the member file drawn here |
+| [stellata](https://github.com/alexmensch/stellata) | AGPL-3.0-only | WebGPU Milky Way study. Not a WebGL 0.160 dependency |
+| [galaxy-explorer](https://github.com/zjoooooo/galaxy-explorer) | MIT | Illustrative disk. Not a measured Milky Way |
+| [Solar-Wanderer](https://github.com/hyqzz/Solar-Wanderer) | MIT | Physical solar scale and ephemerides, as a study |
+| [troika](https://github.com/protectwise/troika) | MIT | SDF text. No built-in declutter. Not used |
+| [gabereiser/earth](https://github.com/gabereiser/earth) | MIT | Atmosphere reference. Not a demonstrated fix for the flicker, and not used |
+
+[Cosmoscope](https://cosmoscope.space/) was looked at as a public front end. No reusable license was verified. That is not a claim that the work is proprietary, and it is not permission to copy it. The same study-only limit is in [`docs/RESEARCH-AND-RENDERING.md`](docs/RESEARCH-AND-RENDERING.md), with Globaïa and CosmosMap.
 
 ---
 
 ## Layout
 
 ```
-universal-map/
-  data/            stars.bin/.json, galaxies.bin/.json, dipole.json,
-                   milkyway.bin/.json, localgroup.json, solarsystem.json,
-                   basin_volume.npz, catalogs/*.parquet
-  src/             loader, stars, galaxies, superclusters, dipole, milkyway,
-                   localgroup, solarsystem, addon
-  textures/        web-optimized maps, manifest, attribution
-  tools/           cfpack.py, patch.py, inline.py, bundle.py, verify.py, qa.py, smoketest/
-  docs/            FORMAT.md, PROGRESS.md, RESEARCH-AND-RENDERING.md
-  figures/         diagnostic figures
+data/       packed layers, parquet extracts, PROVENANCE.md
+src/        loader, stars, galaxies, dipole, milkyway, localgroup,
+            solarsystem, superclusters, tour, addon, shaders
+textures/   web maps, manifest, ATTRIBUTION.md
+tools/      cfpack.py, patch.py, inline.py, bundle.py, verify.py, qa.py, smoketest/
+docs/       FORMAT.md, PROGRESS.md, RESEARCH-AND-RENDERING.md, verification.txt
+figures/    diagrams drawn for this note, and the earlier catalog plots
 ```
 
-Source catalogs (CF4 TSVs, 2MRS, HYG, the CF4 FITS grids, DESI and SDSS) live in
-`../Cosmological Data` and are gitignored — they total about 7.5 GB.
+### Figure index
+
+| Figure | File | Provenance |
+|---|---|---|
+| 1 | `figures/scale-ladder.png` (source `scale-ladder.svg`) | Drawn from `src/addon.js` for this note. Not a capture |
+| 2 | `figures/milkyway_check.png` | Earlier plot of the schematic sample. The inset scale chart is the older five-rung list |
+| 3 | `figures/localgroup-positions.png` (source `localgroup-positions.svg`) | Computed from `data/localgroup.json` for this note. Not a capture |
+| 4 | `figures/data-pipeline.png` (source `data-pipeline.svg`) | Drawn from the provenance note, `galaxies.json`, and the research note. Not a capture |
+| 5 | `figures/coverage_allsky.png` | Earlier survey-footprint plot. Panel titles use the parent-catalog counts |
+| 6 | `figures/galaxies_sgplane.png` | Earlier slab of the packed catalog |
+| 7 | `figures/dipole_sky.png` | Earlier dipole diagnostic |
+| 8 | `figures/stars_check.png` | Earlier HYG-bubble diagnostic. The direction shell is not in the plot |
+| 9 | `figures/orbits_check.png` | Earlier JPL-element polylines. Not the textured Earth |
+| 10 | `figures/basin_validation.png` | Earlier basin slice. Seed ratios in the panel titles match `galaxies.json`; the footer’s other pair is point agreement |
+
+Progress and the open visual list, in shorter form: [`docs/PROGRESS.md`](docs/PROGRESS.md).
