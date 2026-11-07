@@ -1,0 +1,71 @@
+layer        check                                                           result  detail
+-----------------------------------------------------------------------------------------------------------------------
+stars        bubble count                                                    PASS    24704
+stars        shell count                                                     PASS    8920
+stars        bubble colour triples                                           PASS    24704
+stars        max bubble radius                                               PASS    100.003 vs 100 (tol 0.01) pc
+stars        shell vectors unit                                              PASS    2.28479e-05 vs 0 (tol 0.0002)
+stars        absmag within table range                                       PASS    True
+galaxies     point count                                                     PASS    287758
+galaxies     prov length                                                     PASS    287758
+galaxies     vpec length                                                     PASS    287758
+galaxies     basin_s0 length                                                 PASS    287758
+galaxies     basin_s10 length                                                PASS    287758
+galaxies     max |coordinate| under int16 limit                              PASS    True
+galaxies     CF4 rows                                                        PASS    55877
+galaxies     CF4 positions within quantization                               PASS    0.0100113 vs 0 (tol 0.0100643) Mpc/h
+galaxies     2MRS rows                                                       PASS    31881
+galaxies     SDSS DR17 rows                                                  PASS    117614
+galaxies     DESI DR1 BGS rows                                               PASS    82386
+galaxies     rows carrying a peculiar velocity                               PASS    55864
+galaxies     peculiar velocity range plausible                               PASS    True
+galaxies     basin-tagged rows (s0)                                          PASS    277358
+galaxies     basin ids within the page's palette                             PASS    True
+milkyway     point count                                                     PASS    186819
+milkyway     colour triples                                                  PASS    186819
+milkyway     disk radius drawn                                               PASS    21.5072 vs 0 (tol 40) kpc (loose: SG axes are not the disk plane)
+milkyway     Sun-to-centre distance                                          PASS    8.17802 vs 8.17802 (tol 1e-05) kpc
+milkyway     disk normal is a unit vector                                    PASS    1 vs 1 (tol 1e-08)
+milkyway     model is declared schematic                                     PASS    True
+milkyway     every parameter has a reference                                 PASS    True
+dipole       entries                                                         PASS    7
+dipole       markers                                                         PASS    5
+dipole       every entry cites a source                                      PASS    True
+dipole       implied v, cmb                                                  PASS    369.8 vs 369.8 (tol 0.05) km/s
+dipole       implied v, bohme25                                              PASS    1357.2 vs 1357.2 (tol 0.05) km/s
+dipole       implied v, wagenveld23                                          PASS    1294.4 vs 1294.4 (tol 0.05) km/s
+dipole       implied v, secrest21                                            PASS    739.6 vs 739.6 (tol 0.05) km/s
+dipole       implied v, secrest22                                            PASS    739.6 vs 739.6 (tol 0.05) km/s
+dipole       implied v, dam23                                                PASS    909.8 vs 909.8 (tol 0.05) km/s
+solarsystem  planets                                                         PASS    8
+solarsystem  Mercury orbit samples                                           PASS    256
+solarsystem  Mercury aphelion                                                PASS    0.466701 vs 0.466701 (tol 1e-06) au
+solarsystem  Mercury period vs Kepler                                        PASS    0.240847 vs 0.240843 (tol 0.000240843) yr
+solarsystem  Venus orbit samples                                             PASS    256
+solarsystem  Venus aphelion                                                  PASS    0.728238 vs 0.728238 (tol 1e-06) au
+solarsystem  Venus period vs Kepler                                          PASS    0.615197 vs 0.615191 (tol 0.000615191) yr
+solarsystem  Earth orbit samples                                             PASS    256
+solarsystem  Earth aphelion                                                  PASS    1.01671 vs 1.01671 (tol 1e-06) au
+solarsystem  Earth period vs Kepler                                          PASS    1.00002 vs 1 (tol 0.001) yr
+solarsystem  Mars orbit samples                                              PASS    256
+solarsystem  Mars aphelion                                                   PASS    1.66602 vs 1.66602 (tol 1e-06) au
+solarsystem  Mars period vs Kepler                                           PASS    1.88085 vs 1.88085 (tol 0.00188085) yr
+solarsystem  Jupiter orbit samples                                           PASS    256
+solarsystem  Jupiter aphelion                                                PASS    5.45464 vs 5.45464 (tol 1e-06) au
+solarsystem  Jupiter period vs Kepler                                        PASS    11.8626 vs 11.8677 (tol 0.0118677) yr
+solarsystem  Saturn orbit samples                                            PASS    256
+solarsystem  Saturn aphelion                                                 PASS    10.0503 vs 10.0503 (tol 1e-06) au
+solarsystem  Saturn period vs Kepler                                         PASS    29.448 vs 29.4507 (tol 0.0294507) yr
+solarsystem  Uranus orbit samples                                            PASS    256
+solarsystem  Uranus aphelion                                                 PASS    20.096 vs 20.096 (tol 1e-06) au
+solarsystem  Uranus period vs Kepler                                         PASS    84.0175 vs 84.059 (tol 0.084059) yr
+solarsystem  Neptune orbit samples                                           PASS    256
+solarsystem  Neptune aphelion                                                PASS    30.3282 vs 30.3282 (tol 1e-06) au
+solarsystem  Neptune period vs Kepler                                        PASS    164.79 vs 164.892 (tol 0.164892) yr
+solarsystem  frame matrix orthonormal                                        PASS    5.82423e-13 vs 0 (tol 1e-09)
+solarsystem  frame matrix right-handed                                       PASS    1 vs 1 (tol 1e-09)
+payload      Universal Map.html repack byte-identical                        PASS    True
+payload      Universal Map · Skybird Science.html repack byte-identical      PASS    True
+payload      Universal Map · Skybird Science (v2).htm repack byte-identical  PASS    True
+-----------------------------------------------------------------------------------------------------------------------
+67 checks, 0 failed

@@ -1,0 +1,253 @@
+{
+ "layer": "dipole",
+ "frame": "supergalactic cartesian; directions also given in equatorial J2000 and galactic",
+ "reference_velocity_kms": 369.82,
+ "interpretation": "Amplitude ratios are the measured number-count dipole divided by the Ellis-Baldwin kinematic prediction for the CMB velocity. implied_velocity_kms is that ratio times 369.82 km/s, i.e. the speed required IF the whole excess were kinematic. That reading is deliberately literal; most authors regard it as a tension with the standard model rather than a measurement of our speed.",
+ "entries": [
+  {
+   "key": "cmb",
+   "label": "CMB dipole",
+   "reference": "Planck 2018 (Planck Collaboration, A&A 641, A1)",
+   "surveys": "369.82 +/- 0.11 km/s; the kinematic reference all the others are divided by",
+   "amplitude_ratio": 1.0,
+   "amplitude_ratio_err": null,
+   "significance_sigma": null,
+   "implied_velocity_kms": 369.8,
+   "implied_velocity_err_kms": null,
+   "notes": [
+    "Planck"
+   ],
+   "verified_from": "standard value, quoted in Bohme et al. 2025",
+   "direction": {
+    "eq": [
+     167.94,
+     -6.94
+    ],
+    "gal": [
+     264.02,
+     48.25
+    ],
+    "sg": [
+     116.41,
+     -26.67
+    ],
+    "vec_sg": [
+     -0.397468,
+     0.800363,
+     -0.448819
+    ]
+   }
+  },
+  {
+   "key": "bohme25",
+   "label": "Bohme et al. 2025, three surveys combined",
+   "reference": "Phys. Rev. Lett. 135, 201001 (arXiv:2509.16732)",
+   "surveys": "Negative-binomial estimator accounting for multi-component source overdispersion. Direction (RA, Dec) = (165 +/- 8, -11 +/- 11) deg; offset from the CMB dipole (5 +/- 10) deg.",
+   "amplitude_ratio": 3.67,
+   "amplitude_ratio_err": 0.49,
+   "significance_sigma": 5.4,
+   "implied_velocity_kms": 1357.2,
+   "implied_velocity_err_kms": 181.2,
+   "notes": [
+    "NVSS",
+    "RACS-low",
+    "LoTSS-DR2"
+   ],
+   "verified_from": "fetched full text of the paper",
+   "direction": {
+    "eq": [
+     165.0,
+     -11.0
+    ],
+    "gal": [
+     263.89,
+     43.26
+    ],
+    "sg": [
+     120.16,
+     -30.41
+    ],
+    "vec_sg": [
+     -0.433309,
+     0.745632,
+     -0.506237
+    ]
+   }
+  },
+  {
+   "key": "bohme25_nr",
+   "label": "Bohme et al. 2025, NVSS + RACS-low only",
+   "reference": "Phys. Rev. Lett. 135, 201001",
+   "surveys": "Same estimator without LoTSS-DR2; offset from the CMB dipole (8 +/- 10) deg. Direction not encoded separately - drawn along the combined-fit axis and marked as such.",
+   "amplitude_ratio": null,
+   "amplitude_ratio_err": null,
+   "significance_sigma": 4.5,
+   "implied_velocity_kms": null,
+   "implied_velocity_err_kms": null,
+   "notes": [
+    "NVSS",
+    "RACS-low"
+   ],
+   "verified_from": "fetched full text of the paper"
+  },
+  {
+   "key": "wagenveld23",
+   "label": "Wagenveld et al. 2023",
+   "reference": "A&A 675, A72",
+   "surveys": "Poisson estimator on the same two radio surveys. Values as tabulated in Bohme et al. 2025, not read from the original paper.",
+   "amplitude_ratio": 3.5,
+   "amplitude_ratio_err": null,
+   "significance_sigma": 4.8,
+   "implied_velocity_kms": 1294.4,
+   "implied_velocity_err_kms": null,
+   "notes": [
+    "RACS-low",
+    "NVSS"
+   ],
+   "verified_from": "secondary - quoted in Bohme et al. 2025"
+  },
+  {
+   "key": "secrest21",
+   "label": "Secrest et al. 2021",
+   "reference": "ApJL 908, L51",
+   "surveys": "Mid-infrared quasars; dipole amplitude about twice the kinematic expectation, direction approximately 27 deg from the CMB dipole. Ratio recorded as approximate.",
+   "amplitude_ratio": 2.0,
+   "amplitude_ratio_err": null,
+   "significance_sigma": 4.9,
+   "implied_velocity_kms": 739.6,
+   "implied_velocity_err_kms": null,
+   "notes": [
+    "CatWISE2020"
+   ],
+   "verified_from": "web search of the published abstract"
+  },
+  {
+   "key": "secrest22",
+   "label": "Secrest et al. 2022",
+   "reference": "ApJL 937, L31",
+   "surveys": "More conservative test statistic on a deeper sample. Ratio recorded as approximate.",
+   "amplitude_ratio": 2.0,
+   "amplitude_ratio_err": null,
+   "significance_sigma": 4.4,
+   "implied_velocity_kms": 739.6,
+   "implied_velocity_err_kms": null,
+   "notes": [
+    "CatWISE2020 (deeper)"
+   ],
+   "verified_from": "web search of the published abstract"
+  },
+  {
+   "key": "dam23",
+   "label": "Dam, Lewis & Brewer 2023",
+   "reference": "MNRAS 525, 231",
+   "surveys": "Independent Bayesian reanalysis of the CatWISE sample. D = (19 +/- 2)e-3, direction galactic (l, b) = (237.2 +7.9/-8.0, 41.8 +/- 5.0) deg.",
+   "amplitude_ratio": 2.46,
+   "amplitude_ratio_err": 0.18,
+   "significance_sigma": 5.7,
+   "implied_velocity_kms": 909.8,
+   "implied_velocity_err_kms": 66.6,
+   "notes": [
+    "CatWISE2020"
+   ],
+   "verified_from": "web search of the published abstract",
+   "direction": {
+    "eq": [
+     150.02,
+     1.79
+    ],
+    "gal": [
+     237.2,
+     41.8
+    ],
+    "sg": [
+     99.72,
+     -41.05
+    ],
+    "vec_sg": [
+     -0.127272,
+     0.74334,
+     -0.656695
+    ]
+   }
+  }
+ ],
+ "markers": [
+  {
+   "key": "shapley",
+   "label": "Shapley concentration",
+   "kind": "mass concentration",
+   "sg": [
+    -126.1,
+    75.3,
+    -3.4
+   ],
+   "r_mpch": 146.9,
+   "angle_from_cmb_deg": 40.4,
+   "angle_from_bohme_deg": 40.0,
+   "source": "cf-meta landmarks"
+  },
+  {
+   "key": "sink_s10",
+   "label": "Shapley/Laniakea basin sink (smoothing 10)",
+   "kind": "flow sink",
+   "sg": [
+    -136.42,
+    68.69,
+    -9.77
+   ],
+   "r_mpch": 153.0,
+   "angle_from_cmb_deg": 42.1,
+   "angle_from_bohme_deg": 41.1,
+   "source": "cf-meta summary['10'].sink"
+  },
+  {
+   "key": "sink_s0",
+   "label": "Laniakea basin sink (smoothing 0)",
+   "kind": "flow sink",
+   "sg": [
+    -50.64,
+    2.05,
+    43.24
+   ],
+   "r_mpch": 66.6,
+   "angle_from_cmb_deg": 88.0,
+   "angle_from_bohme_deg": 88.6,
+   "source": "cf-meta summary['0'].sink"
+  },
+  {
+   "key": "great_attractor",
+   "label": "Great Attractor (Norma)",
+   "kind": "mass concentration",
+   "sg": [
+    -49.6,
+    -7.2,
+    6.1
+   ],
+   "r_mpch": 50.5,
+   "source": "cf-meta landmarks"
+  },
+  {
+   "key": "vela",
+   "label": "Vela supercluster",
+   "kind": "mass concentration, hidden in the Zone of Avoidance",
+   "sg": [
+    -118.0,
+    19.5,
+    -146.4
+   ],
+   "r_mpch": 189.0,
+   "galactic": [
+    266.0,
+    1.0
+   ],
+   "mass_1e16_msun": 30.6,
+   "mass_err_1e16_msun": 7.0,
+   "radius_mpch": 74.0,
+   "angle_from_cmb_deg": 47.3,
+   "angle_from_bohme_deg": 42.3,
+   "angle_from_shapley_deg": 52.7,
+   "reference": "Hollinger et al. 2026, A&A 713, A4 (arXiv:2603.09339)",
+   "notes": "Position derived here from the published galactic (l, b) = (266, 1) at 189 Mpc/h. Mass approaches Shapley and exceeds Laniakea and the Great Attractor. The CF4-derived basin segmentation already in this page assigns that region to Lepus - there is no Vela basin, because CF4 barely samples the Zone of Avoidance: this layer carries ZERO catalogued galaxies within 20 Mpc/h of the Vela centre and only 239 within its 74 Mpc/h characteristic radius."
+  }
+ ]
+}

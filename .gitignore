@@ -1,0 +1,25 @@
+# Source catalogs and grids live outside the repo - they are GB-scale
+/data/catalogs/*.fits
+/data/raw/
+*.fits
+*.gz
+*.hdr
+*.docx
+.DS_Store
+__pycache__/
+*.pyc
+node_modules/
+
+# Original 8K textures stay in '../Planet textures'; only web-optimized
+# derivatives are committed under textures/
+*.tif
+
+# smoke-test stub
+/node_modules/
+
+# vendored three.js download cache (reproducible; ~1.4 MB)
+/tools/vendor/
+
+# esbuild + npm caches
+/tools/bundle/node_modules/
+/tools/bundle/.cache/
